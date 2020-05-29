@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-@DS("srm")
+@DS("gs")
 @Service
 public class SrmUserServiceImpl implements SrmUserService {
 
