@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -18,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 @SpringBootApplication(exclude = {DruidDataSourceAutoConfigure.class}, scanBasePackages = "com.jyzt.srm")
 @MapperScan({"com.jyzt.srm.srm.mapper", "com.jyzt.srm.gs.mapper"})
 @EnableAspectJAutoProxy(proxyTargetClass = true)
+@ServletComponentScan
 public class SRMApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {

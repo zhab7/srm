@@ -1,5 +1,6 @@
 package com.jyzt.srm.srm.controller;
 
+import com.jyzt.srm.common.entity.Payload;
 import com.jyzt.srm.common.entity.UserInfo;
 import com.jyzt.srm.common.jwt.JwtUtils;
 import com.jyzt.srm.common.jwt.RsaUtils;
@@ -10,9 +11,11 @@ import com.jyzt.srm.srm.service.SrmUserService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.PrivateKey;
@@ -61,11 +64,12 @@ public class SrmUserController {
             PrivateKey privateKey = RsaUtils.getPrivateKey(privateKeyPath);
 
             UserInfo userInfo = new UserInfo(1L, srmUser.getUserName(), srmUser.getAuthorityRefId());
-            String token = JwtUtils.generateTokenExpireInMinutes(userInfo, privateKey, 30);
+            // 设置token过期时间：1440分钟  24小时
+            String token = JwtUtils.generateTokenExpireInMinutes(userInfo, privateKey, 1440);
             CookieUtils.newBuilder()
                     .response(response) // response,用于写cookie
                     .httpOnly(true) // 保证安全防止XSS攻击，不允许JS操作cookie
-                    .domain("http://localhost:3000") // 设置domain
+                    .domain("http://127.0.0.1") // 设置domain
                     .name(cookieName)
                     .value(token) // 设置cookie名称和值
                     .build();// 写cookie
