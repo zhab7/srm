@@ -15,10 +15,4 @@ public class mapperTest {
     @Resource
     private SrmUserService srmUserService;
 
-    @Test
-    public void test(){
-        SrmUser srmUser = srmUserService.getUserByUserRefId("123");
-        System.out.println("srmUser = " + srmUser);
-
-    }
 }

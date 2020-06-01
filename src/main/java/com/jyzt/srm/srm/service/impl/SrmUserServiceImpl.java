@@ -18,12 +18,17 @@ public class SrmUserServiceImpl implements SrmUserService {
 
 
     @Override
-    public SrmUser getUserByUserRefId(String userRefId) {
-        return srmUserMapper.selectById(userRefId);
+    public SrmUser getUserByUserRefId(Long id) {
+        return srmUserMapper.selectById(id);
     }
 
     @Override
     public SrmUser getUserByUserName(String userName) {
         return srmUserMapper.selectOne(Wrappers.<SrmUser>lambdaQuery().eq(SrmUser::getUserName, userName));
+    }
+
+    @Override
+    public void register(SrmUser srmUser) {
+        srmUserMapper.insert(srmUser);
     }
 }

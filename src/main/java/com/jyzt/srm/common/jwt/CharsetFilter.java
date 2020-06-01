@@ -30,7 +30,15 @@ public class CharsetFilter implements Filter {
 
 
     //不需要登录就可以访问的路径(比如:注册登录等)
-    String[] includeUrls = new String[]{"/rest/user/login", "/rest/user/register"};
+    String[] includeUrls = new String[]{
+            "/rest/user/login",
+            "/rest/user/register",
+            "/doc.html",
+            "swagger-ui.html",
+            "/swagger-resources",
+            "/webjars/bycdao-ui/images/api.ico",
+            "/v2/api-docs"
+    };
 
 
     @Override

@@ -1,9 +1,9 @@
 package com.jyzt.srm.srm.controller;
 
-import com.jyzt.srm.common.entity.Payload;
 import com.jyzt.srm.common.entity.UserInfo;
 import com.jyzt.srm.common.jwt.JwtUtils;
 import com.jyzt.srm.common.jwt.RsaUtils;
+import com.jyzt.srm.common.utils.BeanConvertUtils;
 import com.jyzt.srm.common.utils.CookieUtils;
 import com.jyzt.srm.srm.bean.entry.SrmUser;
 import com.jyzt.srm.srm.bean.req.SrmUserReq;
@@ -11,12 +11,9 @@ import com.jyzt.srm.srm.service.SrmUserService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.PrivateKey;
 
@@ -36,9 +33,9 @@ public class SrmUserController {
 
 
     @GetMapping("/getUser")
-    public SrmUser getByUserRefId(@RequestParam String userRefId) {
+    public SrmUser getByUserRefId(@RequestParam Long id) {
 
-        SrmUser srmUser = srmUserService.getUserByUserRefId(userRefId);
+        SrmUser srmUser = srmUserService.getUserByUserRefId(id);
         if (srmUser == null) {
             return null;
         }
@@ -77,4 +74,20 @@ public class SrmUserController {
             e.printStackTrace();
         }
     }
+
+    @PostMapping("/register")
+    @ApiOperation("注册接口")
+    public void register(@RequestBody SrmUserReq srmUserReq) {
+        if (srmUserReq == null || StringUtils.isBlank(srmUserReq.getUserName()) || StringUtils.isBlank(srmUserReq.getPassword())) {
+            throw new RuntimeException("用户名密码为空");
+        }
+
+        SrmUser srmUser = srmUserService.getUserByUserName(srmUserReq.getUserName());
+        if (srmUser != null) {
+            throw new RuntimeException("用户名已存在");
+        }
+        SrmUser user = BeanConvertUtils.map(srmUserReq, SrmUser.class);
+        srmUserService.register(user);
+    }
+
 }
