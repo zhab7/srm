@@ -69,7 +69,7 @@ public class SrmUserController {
             CookieUtils.newBuilder()
                     .response(response) // response,用于写cookie
                     .httpOnly(true) // 保证安全防止XSS攻击，不允许JS操作cookie
-                    .domain("http://127.0.0.1") // 设置domain
+//                    .domain("http://127.0.0.1") // 设置domain
                     .name(cookieName)
                     .value(token) // 设置cookie名称和值
                     .build();// 写cookie
