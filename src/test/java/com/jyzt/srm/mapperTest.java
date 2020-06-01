@@ -1,6 +1,6 @@
 package com.jyzt.srm;
 
-import com.jyzt.srm.srm.bean.SrmUser;
+import com.jyzt.srm.srm.bean.entry.SrmUser;
 import com.jyzt.srm.srm.service.SrmUserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;

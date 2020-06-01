@@ -1,4 +1,4 @@
-package com.jyzt.srm.srm.bean;
+package com.jyzt.srm.srm.bean.entry;
 
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
