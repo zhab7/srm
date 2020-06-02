@@ -54,7 +54,7 @@ public class Swagger2Config  implements WebMvcConfigurer {
                 .apiInfo(apiInfo())
                 .select()
                 //此包路径下的类，才生成接口文档
-                .apis(RequestHandlerSelectors.basePackage("com.verymro.goodstone"))
+                .apis(RequestHandlerSelectors.basePackage("com.jyzt.srm"))
                 //加了ApiOperation注解的类，才生成接口文档
 //                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 .paths(PathSelectors.any())
@@ -70,7 +70,7 @@ public class Swagger2Config  implements WebMvcConfigurer {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 // //大标题
-                .title("Good Stone 后台服务API接口文档")
+                .title("SRM 后台服务API接口文档")
                 // 版本号
                 .version("1.0")
 //				.termsOfServiceUrl("NO terms of service")

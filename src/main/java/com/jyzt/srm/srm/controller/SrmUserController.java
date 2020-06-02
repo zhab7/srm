@@ -32,8 +32,9 @@ public class SrmUserController {
     String cookieName;
 
 
-    @GetMapping("/getUser")
-    public SrmUser getByUserRefId(@RequestParam Long id) {
+    @GetMapping("/getUser/{id}")
+    @ApiOperation("根据用户id 获取用户信息")
+    public SrmUser getByUserRefId(@PathVariable Long id) {
 
         SrmUser srmUser = srmUserService.getUserByUserRefId(id);
         if (srmUser == null) {
@@ -61,12 +62,12 @@ public class SrmUserController {
             PrivateKey privateKey = RsaUtils.getPrivateKey(privateKeyPath);
 
             UserInfo userInfo = new UserInfo(1L, srmUser.getUserName(), srmUser.getAuthorityRefId());
-            // 设置token过期时间：1440分钟  24小时
-            String token = JwtUtils.generateTokenExpireInMinutes(userInfo, privateKey, 1440);
+            // 设置token过期时间：960分钟  16小时
+            String token = JwtUtils.generateTokenExpireInMinutes(userInfo, privateKey, 960);
             CookieUtils.newBuilder()
                     .response(response) // response,用于写cookie
                     .httpOnly(true) // 保证安全防止XSS攻击，不允许JS操作cookie
-//                    .domain("http://127.0.0.1") // 设置domain
+//                    .domain("127.0.0.1") // 设置domain
                     .name(cookieName)
                     .value(token) // 设置cookie名称和值
                     .build();// 写cookie

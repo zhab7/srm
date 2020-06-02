@@ -34,9 +34,14 @@ public class CharsetFilter implements Filter {
             "/rest/user/login",
             "/rest/user/register",
             "/doc.html",
-            "swagger-ui.html",
+            "/swagger-ui.html",
             "/swagger-resources",
             "/webjars/bycdao-ui/images/api.ico",
+            "/webjars/bycdao-ui/layer3.0.3/skin/default/loading-2.gif",
+            "/webjars/springfox-swagger-ui/springfox.css",
+            "/webjars/springfox-swagger-ui/swagger-ui-standalone-preset.js",
+            "/webjars/springfox-swagger-ui/springfox.js",
+            "/rest/initKey/init",
             "/v2/api-docs"
     };
 
@@ -92,7 +97,7 @@ public class CharsetFilter implements Filter {
 
     public boolean isNeedFilter(String uri) {
         for (String includeUrl : includeUrls) {
-            if (includeUrl.equals(uri)) {
+            if (includeUrl.startsWith(uri)) {
                 return false;
             }
         }
