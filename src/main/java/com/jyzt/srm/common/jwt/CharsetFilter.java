@@ -12,8 +12,10 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.PublicKey;
+import java.util.Calendar;
 import java.util.Date;
 
 @WebFilter(filterName = "CharsetFilter", urlPatterns = "/*", initParams = {
@@ -23,6 +25,8 @@ public class CharsetFilter implements Filter {
 
     @Value("${srm.jwt.publicKeyPath}")
     String publicKeyPath;
+    @Value("${srm.jwt.privateKeyPath}")
+    String privateKeyPath;
     @Value("${srm.jwt.cookieName}")
     String cookieName;
     @Resource
@@ -55,6 +59,7 @@ public class CharsetFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
         HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) resp;
         if (!isNeedFilter(request.getRequestURI())) {
             chain.doFilter(req, resp);
         } else {
@@ -66,7 +71,13 @@ public class CharsetFilter implements Filter {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            Payload<UserInfo> payLoad = JwtUtils.getInfoFromToken(token, publicKey, UserInfo.class);
+            Payload<UserInfo> payLoad = null;
+            try {
+                payLoad = JwtUtils.getInfoFromToken(token, publicKey, UserInfo.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("请重新登录");
+            }
 
             UserInfo info = payLoad.getInfo();
             if (info == null) {
@@ -77,15 +88,36 @@ public class CharsetFilter implements Filter {
                 throw new RuntimeException("未登录");
             }
             // TODO 检验过期时间
-//            Date expiration = payLoad.getExpiration();
-//            System.out.println("expiration = " + expiration);
-//            if (expiration.after(new Date())) {
-//                System.out.println("true");
-//            } else {
-//                System.out.println("false");
-//            }
+            Date expiration = payLoad.getExpiration();
+            System.out.println("expiration = " + expiration);
+            Date time = getWeekday(expiration);
+            System.out.println("time = " + time);
+            if (!time.after(new Date())) {
+                // 增加token过期时间
+                try {
+                    String newToken = JwtUtils.generateTokenExpireInMinutes(info, RsaUtils.getPrivateKey(privateKeyPath), 30);
+                    CookieUtils.newBuilder()
+                            .response(response) // response,用于写cookie
+                            .httpOnly(true) // 保证安全防止XSS攻击，不允许JS操作cookie
+    //                    .domain("127.0.0.1") // 设置domain
+                            .name(cookieName)
+                            .value(newToken) // 设置cookie名称和值
+                            .build();// 写cookie
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             chain.doFilter(req, resp);//交给下一个过滤器或servlet处理
         }
+    }
+
+    private Date getWeekday(Date expiration) {
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(expiration);
+
+        c.add(Calendar.MINUTE, -5);
+        return c.getTime();
     }
 
     @Override

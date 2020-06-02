@@ -63,7 +63,7 @@ public class SrmUserController {
 
             UserInfo userInfo = new UserInfo(1L, srmUser.getUserName(), srmUser.getAuthorityRefId());
             // 设置token过期时间：960分钟  16小时
-            String token = JwtUtils.generateTokenExpireInMinutes(userInfo, privateKey, 960);
+            String token = JwtUtils.generateTokenExpireInMinutes(userInfo, privateKey, 30);
             CookieUtils.newBuilder()
                     .response(response) // response,用于写cookie
                     .httpOnly(true) // 保证安全防止XSS攻击，不允许JS操作cookie
